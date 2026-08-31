@@ -1,0 +1,32 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            mkdir -p /root/app
+            cd /root/app
+            git config --global --add safe.directory /root/app
+            if [ -d .git ]; then
+              git fetch origin
+              git reset --hard origin/main
+            else
+              git clone -b main https://github.com/${{ github.repository }}.git .
+            fi
+            docker compose down
+            docker compose up --build -d
