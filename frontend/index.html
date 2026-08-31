@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>StackAlg Web App</title>
+    <style>
+        body { font-family: sans-serif; background: #121214; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e1e24; padding: 30px; border-radius: 12px; text-align: center; }
+        .status { margin-top: 15px; padding: 12px; border-radius: 6px; background: #2a2a35; color: #00ffcc; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>StackAlg Web App</h1>
+        <div id="api-data" class="status">Загрузка данных с API...</div>
+    </div>
+
+    <script>
+        async function loadData() {
+            const container = document.getElementById('api-data');
+            try {
+                // Запрос к бэкенду
+                const response = await fetch('/api/weatherforecast');
+                if (!response.ok) throw new Error('Код ошибки: ' + response.status);
+                
+                const data = await response.json();
+                // Выводим результат на страницу
+                container.innerHTML = `Ответ C#: погода ${data[0].temperatureC}°C (${data[0].summary})`;
+            } catch (err) {
+                container.innerHTML = `<span style="color: #ff5555;">Ошибка API: ${err.message}</span>`;
+            }
+        }
+
+        // Запускаем при открытии страницы
+        loadData();
+    </script>
+</body>
+</html>
