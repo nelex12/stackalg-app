@@ -19,11 +19,15 @@ namespace MyApi
             var app = builder.Build();
 
             // ¬ключаем Swagger вне зависимости от среды (и дл€ Production тоже)
-            app.UseSwagger();
+            app.UseSwagger(c =>
+            {
+                c.RouteTemplate = "api/swagger/{documentName}/swagger.json";
+            });
+
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                c.RoutePrefix = "swagger";
+                c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = "api/swagger";
             });
 
             app.UseCors("AllowAll");
